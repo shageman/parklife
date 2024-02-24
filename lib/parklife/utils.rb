@@ -49,7 +49,12 @@ module Parklife
       urls.concat(doc.css('source').map { |v| [v[:srcset], v[:src]].compact.reject(&:empty?).first })
 
       urls.each do |url|
-        uri = URI.parse(url)
+        begin
+          uri = URI.parse(url)
+        rescue URI::InvalidURIError => e
+          puts "Error parsing url: #{e}"
+          next
+        end
 
         # Don't visit a URL that belongs to a different domain - for now this is
         # a guess that it's not an internal link but it also covers mailto/ftp
